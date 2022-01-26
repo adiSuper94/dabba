@@ -1,0 +1,17 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/adisuper/Courses/DBI/Project/Project1'
+g++ -O2 -Wno-deprecated  -g -c Record.cc
+g++ -O2 -Wno-deprecated  -g -c Comparison.cc
+g++ -O2 -Wno-deprecated  -g -c ComparisonEngine.cc
+g++ -O2 -Wno-deprecated  -g -c Schema.cc
+g++ -O2 -Wno-deprecated  -g -c File.cc
+g++ -O2 -Wno-deprecated  -g -c DBFile.cc
+yacc -d Parser.y
+sed -i y.tab.c -e "s/  __attribute__ ((__unused__))$/# ifndef __cplusplus\n  __attribute__ ((__unused__));\n# endif/" 
+g++ -c y.tab.c
+lex  Lexer.l
+gcc  -c lex.yy.c
+g++ -O2 -Wno-deprecated  -g -c test.cc
+g++ -O2 -Wno-deprecated  -o test.out Record.o Comparison.o ComparisonEngine.o Schema.o File.o DBFile.o y.tab.o lex.yy.o test.o -lfl
+make: Leaving directory '/home/adisuper/Courses/DBI/Project/Project1'
+ 
