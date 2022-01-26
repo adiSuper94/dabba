@@ -3,55 +3,52 @@
 #define SCHEMA_H
 
 #include <stdio.h>
-#include "Record.h"
-#include "Schema.h"
-#include "File.h"
+
 #include "Comparison.h"
 #include "ComparisonEngine.h"
+#include "File.h"
+#include "Record.h"
+#include "Schema.h"
 
 struct Attribute {
-
-	char *name;
-	Type myType;
+  char *name;
+  Type myType;
 };
 
 class OrderMaker;
 class Schema {
+  // gives the attributes in the schema
+  int numAtts;
+  Attribute *myAtts;
 
-	// gives the attributes in the schema
-	int numAtts;
-	Attribute *myAtts;
+  // gives the physical location of the binary file storing the relation
+  const char *fileName;
 
-	// gives the physical location of the binary file storing the relation
-	const char *fileName;
+  friend class Record;
 
-	friend class Record;
+ public:
+  // gets the set of attributes, but be careful with this, since it leads
+  // to aliasing!!!
+  Attribute *GetAtts();
 
-public:
+  // returns the number of attributes
+  int GetNumAtts();
 
-	// gets the set of attributes, but be careful with this, since it leads
-	// to aliasing!!!
-	Attribute *GetAtts ();
+  // this finds the position of the specified attribute in the schema
+  // returns a -1 if the attribute is not present in the schema
+  int Find(const char *attName);
 
-	// returns the number of attributes
-	int GetNumAtts ();
+  // this finds the type of the given attribute
+  Type FindType(const char *attName);
 
-	// this finds the position of the specified attribute in the schema
-	// returns a -1 if the attribute is not present in the schema
-	int Find (const char *attName);
+  // this reads the specification for the schema in from a file
+  Schema(const char *fName, const char *relName);
 
-	// this finds the type of the given attribute
-	Type FindType (const char *attName);
+  // this constructs a sort order structure that can be used to
+  // place a lexicographic ordering on the records using this type of schema
+  int GetSortOrder(OrderMaker &order);
 
-	// this reads the specification for the schema in from a file
-	Schema (const char *fName, const char *relName);
-
-	// this constructs a sort order structure that can be used to
-	// place a lexicographic ordering on the records using this type of schema
-	int GetSortOrder (OrderMaker &order);
-
-	~Schema ();
-
+  ~Schema();
 };
 
 #endif

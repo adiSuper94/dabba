@@ -1,0 +1,14 @@
+{
+    "makefile.extensionOutputFolder": "./.vscode",
+    "files.associations": {
+        "cstdio": "cpp",
+        "new": "cpp"
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/adisuper/Courses/DBI/Project/Project1",
+            "binaryPath": "/home/adisuper/Courses/DBI/Project/Project1/test.out",
+            "binaryArgs": []
+        }
+    ]
+}
