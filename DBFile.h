@@ -12,6 +12,15 @@ typedef enum { heap, sorted, tree } fType;
 // stub DBFile header..replace it with your own DBFile.h
 
 class DBFile {
+ private:
+  bool eof, isPageDirty;
+  char *filePath;
+  off_t currPageIndex;
+  off_t readPageIndex;
+  File file;
+  Record *currentRecord;
+  Page *page;
+
  public:
   DBFile();
 
@@ -19,10 +28,10 @@ class DBFile {
   int Open(const char *fpath);
   int Close();
 
-  void Load(Schema &myschema, const char *loadpath);
+  void Load(Schema &mySchema, const char *loadPath);
 
   void MoveFirst();
-  void Add(Record &addme);
-  int GetNext(Record &fetchme);
-  int GetNext(Record &fetchme, CNF &cnf, Record &literal);
+  void Add(Record &addMe);
+  int GetNext(Record &fetchMe);
+  int GetNext(Record &fetchMe, CNF &cnf, Record &literal);
 };

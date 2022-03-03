@@ -30,8 +30,6 @@ class Comparison {
   void Print();
 };
 
-class Schema;
-
 // This structure encapsulates a sort order for records
 class OrderMaker {
   friend class ComparisonEngine;

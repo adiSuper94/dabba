@@ -131,7 +131,7 @@ int ComparisonEngine ::Compare(Record *left, OrderMaker *order_left, Record *rig
 }
 
 // Here we apply a CNF to a single record; this function either returns true or false
-// dpending upon wheter or not the CNF expression accepts the record
+// depending upon whether or not the CNF expression accepts the record
 int ComparisonEngine ::Compare(Record *left, Record *literal, CNF *myComparison) {
   for (int i = 0; i < myComparison->numAnds; i++) {
     for (int j = 0; j < myComparison->orLens[i]; j++) {

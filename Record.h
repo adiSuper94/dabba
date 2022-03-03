@@ -11,7 +11,6 @@
 #include "File.h"
 #include "ParseTree.h"
 #include "Record.h"
-
 // Basic record data structure. Data is actually stored in "bits" field. The layout of bits is as
 // follows:
 //	1) First sizeof(int) bytes: length of the record in bytes

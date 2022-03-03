@@ -178,7 +178,7 @@ void TwoWayList<Type>::Retreat() {
   list->current = list->current->previous;
 }
 
-// insert an item at the current poition
+// insert an item at the current position
 template <class Type>
 void TwoWayList<Type>::Insert(Type *Item) {
   Node *temp = new (std::nothrow) Node;
@@ -216,7 +216,7 @@ Type *TwoWayList<Type>::Current(int offset) {
   return temp->data;
 }
 
-// remove an item from the current poition
+// remove an item from the current position
 template <class Type>
 void TwoWayList<Type>::Remove(Type *Item) {
   Node *temp = list->current->next;
