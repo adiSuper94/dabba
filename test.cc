@@ -1,6 +1,6 @@
+#pragma  once
 #include "test.h"
 #include "BigQ.h"
-#include <pthread.h>
 
 void *producer (void *arg) {
 
@@ -10,6 +10,7 @@ void *producer (void *arg) {
 	int counter = 0;
 
 	DBFile dbfile;
+    cout << "File path is " << rel->path() << endl;
 	dbfile.Open (rel->path ());
 	cout << " producer: opened DBFile " << rel->path () << endl;
 	dbfile.MoveFirst ();
@@ -116,7 +117,6 @@ void test1 (int option, int runlen) {
 }
 
 int main (int argc, char *argv[]) {
-
 	setup ();
 
 	relation *rel_ptr[] = {n, r, c, p, ps, o, li};
