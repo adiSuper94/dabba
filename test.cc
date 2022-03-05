@@ -26,6 +26,7 @@ void *producer (void *arg) {
 	myPipe->ShutDown ();
 
 	cout << " producer: inserted " << counter << " recs into the pipe\n";
+    return nullptr;
 }
 
 void *consumer (void *arg) {
@@ -79,6 +80,7 @@ void *consumer (void *arg) {
 	if (err) {
 		cerr << " consumer: " <<  err << " recs failed sorted order test \n" << endl;
 	}
+    return nullptr;
 }
 
 

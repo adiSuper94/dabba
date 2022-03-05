@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_executable(Project1 main.cc Record.cc Record.h  
         Comparison.cc Comparison.h ComparisonEngine.cc ComparisonEngine.h
         DBFile.cc DBFile.h File.cc File.h BigQ.cc BigQ.h
-        Pipe.cc Pipe.h TwoWayList.cc TwoWayList.h Schema.h Schema.cc ParseTree.h)
+        Pipe.cc Pipe.h TwoWayList.cc TwoWayList.h Schema.h Schema.cc ParseTree.h Run.cpp Run.h)
         include(FetchContent)
 
 FetchContent_Declare(
