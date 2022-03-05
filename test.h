@@ -12,7 +12,7 @@ using namespace std;
 
 char *catalog_path = "catalog"; 
 char *tpch_dir ="/home/adisuper/Courses/DBI/Project/tpch-dbgen/"; // dir where dbgen tpch files (extension *.tbl) can be found
-char *dbfile_dir = "";
+char *dbfile_dir = "/home/adisuper/Courses/DBI/Project/tpch-dbgen/uf/";
 
 
 extern "C" {
