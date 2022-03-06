@@ -40,6 +40,8 @@ class Page {
 
   // empty it out
   void EmptyItOut();
+
+  int getNumRecs();
 };
 
 class File {

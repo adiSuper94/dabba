@@ -15,8 +15,9 @@ public:
 
 class Run {
 private:
-    int startPage;
-    int endPage;
+    long startPage;
+    long endPage;
+    long nextPage;
     Page *page = new Page();
     File *file;
 

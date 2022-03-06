@@ -10,6 +10,8 @@
 using namespace std;
 
 class BigQ {
+private:
+    //pthread_t *worker = nullptr;
 public:
 	BigQ (Pipe &in, Pipe &out, OrderMaker &sortorder, int runlen);
 	~BigQ ();
@@ -32,10 +34,15 @@ struct CustomRecordComparator {
     }
 };
 
-struct tpmms_args {
+class tpmms_args {
+public:
     Pipe &in;
     Pipe &out;
     OrderMaker &sortOrder;
     int runLen;
     int runCount;
+
+    tpmms_args(Pipe &in, Pipe &out, OrderMaker &sortOrder, int runLen, int runCount);
+
+
 };

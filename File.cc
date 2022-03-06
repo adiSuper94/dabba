@@ -141,6 +141,10 @@ void Page ::FromBinary(char *bits) {
   delete temp;
 }
 
+int Page::getNumRecs() {
+    return numRecs;
+}
+
 File ::File() {}
 
 File ::~File() {}
