@@ -1,10 +1,9 @@
 #include "BigQ.h"
-#include <vector>
 #include <queue>
 #include <algorithm>
 
 
-void sortAndWriteRun(File *file, OrderMaker *sortOrder, const vector<Page *>& pages){
+void BigQ::sortAndWriteRun(File *file, OrderMaker *sortOrder, const vector<Page *>& pages){
     // Sort Records
     vector<Record *> records;
     CustomRecordComparator recComparator(sortOrder);
@@ -55,7 +54,7 @@ void sortAndWriteRun(File *file, OrderMaker *sortOrder, const vector<Page *>& pa
  * 2. Sort each chuck individually
  * 3. Write the sorted chunks to disk
  */
-void pass1(File *file, tpmms_args *args) {
+void BigQ::pass1(File *file, tpmms_args *args) {
     Pipe &in = args->in;
     OrderMaker &sortOrder = args->sortOrder;
     int runLen = args->runLen;
@@ -124,7 +123,7 @@ void pass1(File *file, tpmms_args *args) {
 /**
  * Merge k sorted runs, and pump it to out.
  */
-void pass2(File *file, tpmms_args *args) {
+void  BigQ::pass2(File *file, tpmms_args *args) {
     int runCount = args->runCount;
     int runLen = args->runLen;
     Pipe& out = args->out;
@@ -163,21 +162,28 @@ void pass2(File *file, tpmms_args *args) {
     cout << "out count"<< outCount << endl;
 }
 
-
-void *tpmms(void *args) {
-    auto *tpmmsArgs = (tpmms_args*) args;
+File* BigQ::initFile(){
     File *file = new File();
     file->Open(0, "tmpBigQ.bin");
-    pass1(file, tpmmsArgs);
-    pass2(file, tpmmsArgs);
+    return file;
+}
+
+void  BigQ::cleanUp(File *file, tpmms_args *args){
     file->Close();
-    Pipe &out = tpmmsArgs->out;
+    Pipe &out = args->out;
     out.ShutDown();
     remove("tmpBigQ.bin");
     delete file;
-    return nullptr;
 }
 
+void * tpmms(void *args) {
+    auto *tpmmsArgs = (tpmms_args*) args;
+    File * file = BigQ::initFile();
+    BigQ::pass1(file, tpmmsArgs);
+    BigQ::pass2(file, tpmmsArgs);
+    BigQ::cleanUp(file, tpmmsArgs);
+    return nullptr;
+}
 
 BigQ::BigQ (Pipe &in, Pipe &out, OrderMaker &sortorder, int runlen) {
 	// read data from in pipe sort them into runlen pages
