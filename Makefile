@@ -38,7 +38,7 @@ DBFile.o: DBFile.cc
 	$(CC) -g -c DBFile.cc
 
 File.o: File.cc
-	$(CC) -g -c File.cc
+	$(CC) -g -c -v File.cc
 
 Record.o: Record.cc
 	$(CC) -g -c Record.cc

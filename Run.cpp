@@ -12,8 +12,10 @@ RunRecord::RunRecord(int runArrayIndex) {
 Run::Run(File *file, int runLen, int currentRunNumber) {
     this->file = file;
     this->startPage = runLen * currentRunNumber;
-    nextPage = startPage;
-    this->endPage = min((off_t) (runLen * (currentRunNumber + 1)) - 1, file->GetLength() - 2);
+    nextPage = startPage + 1;
+    page = new Page();
+    file->GetPage(page, startPage);
+    this->endPage = min((off_t) (runLen * (currentRunNumber + 1)) - 1, file->GetLength() - 1);
 }
 
 Run::~Run() = default;

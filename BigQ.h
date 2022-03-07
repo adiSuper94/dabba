@@ -11,7 +11,7 @@ using namespace std;
 
 class BigQ {
 private:
-    //pthread_t *worker = nullptr;
+    pthread_t *worker = nullptr;
 public:
 	BigQ (Pipe &in, Pipe &out, OrderMaker &sortorder, int runlen);
 	~BigQ ();

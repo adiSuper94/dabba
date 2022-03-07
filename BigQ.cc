@@ -34,6 +34,7 @@ void sortAndWriteRun(File *file, OrderMaker *sortOrder, const vector<Page *>& pa
         }else{
             stat_repaged++;
         }
+        delete recordToWrite;
     }
     //process last page
     file->AddPage(pageToWrite, file->GetLength());
@@ -116,6 +117,7 @@ void pass1(File *file, tpmms_args *args) {
     if(!pages.empty()){
         cerr <<"BAD: pages vector has not been cleared successfully!";
     }
+    cout << "in count " << stat_recordsFromPipe <<endl;
 
 }
 
@@ -123,51 +125,60 @@ void pass1(File *file, tpmms_args *args) {
  * Merge k sorted runs, and pump it to out.
  */
 void pass2(File *file, tpmms_args *args) {
-    cout << "in p2" << endl;
     int runCount = args->runCount;
     int runLen = args->runLen;
-    auto out = args->out;
+    Pipe& out = args->out;
     auto sortOrder = args->sortOrder;
-
-    cout << "args set" << endl;
-    cout << "runLen: " << runLen <<endl;
-    cout << "runCount: " << runCount <<endl;
 
     Run *runs[runCount];
     for (int runNumber = 0; runNumber < runCount; runNumber++)
+    {
         runs[runNumber] = new Run(file, runLen, runNumber);
-    priority_queue<RunRecord *, vector<RunRecord *>, CustomRecordComparator> pqueue(&sortOrder);
+    }
 
+    priority_queue<RunRecord *, vector<RunRecord *>, CustomRecordComparator> pqueue(&sortOrder);
     for (int runNumber = 0; runNumber < runCount; runNumber++) {
         auto *rr = new RunRecord(runNumber);
         if (runs[runNumber]->getFirst(rr) == 1) {
             pqueue.push(rr);
         }
     }
+    int outCount  =0;
     for(int i = 0; i < runCount; i++){
         while (!pqueue.empty()) {
             RunRecord *rr = pqueue.top();
             int runIndex = rr->runIndex;
+
             out.Insert(rr->firstOne);
+            outCount ++;
             pqueue.pop();
 
             auto *nextRR = new RunRecord(runIndex);
             if (runs[runIndex]->getFirst(nextRR) == 1) pqueue.push(nextRR);
         }
     }
+    for (int runNumber = 0; runNumber < runCount; runNumber++) {
+        delete runs[runNumber];
+    }
+    cout << "out count"<< outCount << endl;
 }
 
 
 void *tpmms(void *args) {
     auto *tpmmsArgs = (tpmms_args*) args;
     File *file = new File();
+    file->Open(0, "tmpBiqQ.bin");
     cout << "gc p1" << endl;
     pass1(file, tpmmsArgs);
-    cout << "gc p2" << endl;
     pass2(file, tpmmsArgs);
+    cout << "p2 out" << endl;
     file->Close();
-    auto out = tpmmsArgs->out;
+
+    Pipe &out = tpmmsArgs->out;
     out.ShutDown();
+    remove("tmpBigQ.bin");
+    delete file;
+    cout << "bigq out" << endl;
     return nullptr;
 }
 
@@ -179,14 +190,16 @@ BigQ::BigQ (Pipe &in, Pipe &out, OrderMaker &sortorder, int runlen) {
  	// into the out pipe
 
     // finally shut down the out pipe
-    pthread_t worker;
+    worker = new pthread_t();
     auto *args = new tpmms_args(in, out, sortorder, runlen, 0);
-    pthread_create(&worker, nullptr, tpmms, args);
+    pthread_create(worker, nullptr, tpmms, args);
 }
 
 BigQ::~BigQ () {
-
-
+    if(worker != nullptr){
+        pthread_join(*worker, nullptr);
+        delete worker;
+    }
 }
 
 tpmms_args::tpmms_args(Pipe &in, Pipe &out, OrderMaker &sortOrder, int runLen, int runCount) : in(in), out(out),

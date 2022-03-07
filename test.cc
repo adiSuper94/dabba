@@ -68,8 +68,6 @@ void *consumer (void *arg) {
 		i++;
 	}
 
-	cout << " consumer: removed " << i << " recs from the pipe\n";
-
 	if (t->write) {
 		if (last) {
 			dbfile.Add (*last);
@@ -81,6 +79,7 @@ void *consumer (void *arg) {
 	if (err) {
 		cerr << " consumer: " <<  err << " recs failed sorted order test \n" << endl;
 	}
+    cout << " consumer: removed " << i << " recs from the pipe\n";
     return nullptr;
 }
 
@@ -96,6 +95,7 @@ void test1 (int option, int runlen) {
 	Pipe output (buffsz);
 
 	// thread to dump data into the input pipe (for BigQ's consumption)
+    cout << "creating producer \n";
 	pthread_t thread1;
 	pthread_create (&thread1, NULL, producer, (void *)&input);
 

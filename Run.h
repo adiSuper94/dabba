@@ -18,7 +18,7 @@ private:
     long startPage;
     long endPage;
     long nextPage;
-    Page *page = new Page();
+    Page *page;
     File *file;
 
 
