@@ -10,7 +10,7 @@ using namespace std;
 
 // make sure that the information below is correct
 
-char *catalog_path = "catalog"; 
+char *catalog_path = "/home/adisuper/Courses/DBI/Project/Project1/catalog";
 char *tpch_dir ="/home/adisuper/Courses/DBI/Project/tpch-dbgen/"; // dir where dbgen tpch files (extension *.tbl) can be found
 char *dbfile_dir = "/home/adisuper/Courses/DBI/Project/tpch-dbgen/uf/";
 

@@ -12,9 +12,9 @@ add_executable(default_tests test.cc test.h Record.cc Record.h Comparison.cc Com
         Schema.cc Schema.h File.cc File.h Run.cpp Run.h BigQ.cc BigQ.h DBFile.cc DBFile.h Pipe.cc Pipe.h
         y.tab.c lex.yy.c)
 add_executable(
-        a2_1_gtest  a2_1_test.cc DBFile.h DBFile.cc Record.cc Record.h Comparison.cc Comparison.h
+        a2_1_gtest gtest/a2_1_test.cc DBFile.h DBFile.cc Record.cc Record.h Comparison.cc Comparison.h
         ComparisonEngine.cc ComparisonEngine.h Schema.cc Schema.h File.cc File.h Run.cpp Run.h BigQ.cc BigQ.h
-        Pipe.cc Pipe.h)
+        Pipe.cc Pipe.h y.tab.o lex.yy.o gtest/testHelper.cpp gtest/testHelper.h)
 
 target_link_libraries(a2_1_gtest gtest_main)
 include(FetchContent)
