@@ -167,18 +167,14 @@ void pass2(File *file, tpmms_args *args) {
 void *tpmms(void *args) {
     auto *tpmmsArgs = (tpmms_args*) args;
     File *file = new File();
-    file->Open(0, "tmpBiqQ.bin");
-    cout << "gc p1" << endl;
+    file->Open(0, "tmpBigQ.bin");
     pass1(file, tpmmsArgs);
     pass2(file, tpmmsArgs);
-    cout << "p2 out" << endl;
     file->Close();
-
     Pipe &out = tpmmsArgs->out;
     out.ShutDown();
     remove("tmpBigQ.bin");
     delete file;
-    cout << "bigq out" << endl;
     return nullptr;
 }
 
