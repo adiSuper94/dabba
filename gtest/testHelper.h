@@ -6,6 +6,6 @@
 #include "../Pipe.h"
 #include "../BigQ.h"
 
-void *producer (void *arg);
+void producer (Pipe& arg);
 tpmms_args get_tpmms_args();
 bool isFileOnFS(const std::string& name);

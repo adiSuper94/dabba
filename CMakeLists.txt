@@ -11,27 +11,11 @@ add_executable(Project1 main.cc Record.cc Record.h
 add_executable(default_tests test.cc test.h Record.cc Record.h Comparison.cc Comparison.h ComparisonEngine.cc ComparisonEngine.h
         Schema.cc Schema.h File.cc File.h Run.cpp Run.h BigQ.cc BigQ.h DBFile.cc DBFile.h Pipe.cc Pipe.h
         y.tab.c lex.yy.c)
-add_executable(
-        a2_1_gtest gtest/a2_1_test.cc DBFile.h DBFile.cc Record.cc Record.h Comparison.cc Comparison.h
-        ComparisonEngine.cc ComparisonEngine.h Schema.cc Schema.h File.cc File.h Run.cpp Run.h BigQ.cc BigQ.h
-        Pipe.cc Pipe.h y.tab.o lex.yy.o gtest/testHelper.cpp gtest/testHelper.h)
 
-target_link_libraries(a2_1_gtest gtest_main)
-include(FetchContent)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 target_link_libraries(default_tests PUBLIC Threads::Threads)
+add_subdirectory(gtest)
 
-FetchContent_Declare(
-        googletest
-        URL https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip
-)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
-
-enable_testing()
-
-include(GoogleTest)
-gtest_discover_tests(a2_1_gtest)

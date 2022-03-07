@@ -116,7 +116,7 @@ void BigQ::pass1(File *file, tpmms_args *args) {
     if(!pages.empty()){
         cerr <<"BAD: pages vector has not been cleared successfully!";
     }
-    cout << "in count " << stat_recordsFromPipe <<endl;
+    //cout << "in count " << stat_recordsFromPipe <<endl;
 
 }
 
@@ -159,7 +159,7 @@ void  BigQ::pass2(File *file, tpmms_args *args) {
     for (int runNumber = 0; runNumber < runCount; runNumber++) {
         delete runs[runNumber];
     }
-    cout << "out count"<< outCount << endl;
+    //cout << "out count"<< outCount << endl;
 }
 
 File* BigQ::initFile(){

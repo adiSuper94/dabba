@@ -8,11 +8,9 @@
 #include "../DBFile.h"
 #include "../test.h"
 
-void *producer (void *arg) {
+void producer (Pipe &myPipe) {
 
-    Pipe &myPipe = (Pipe &) arg;
-
-    Record temp;
+    Record *temp  = new Record();
     int counter = 0;
 
     DBFile dbfile;
@@ -20,19 +18,18 @@ void *producer (void *arg) {
     dbfile.Open ("/home/adisuper/Courses/DBI/Project/tpch-dbgen/uf/nation.bin");
     dbfile.MoveFirst ();
 
-    while (dbfile.GetNext (temp) == 1) {
+    while (dbfile.GetNext (*temp) == 1) {
         counter += 1;
         if (counter%100000 == 0) {
             cerr << " producer: " << counter << endl;
         }
-        myPipe.Insert (&temp);
+        myPipe.Insert (temp);
     }
 
     dbfile.Close ();
     myPipe.ShutDown ();
 
     cout << " producer: inserted " << counter << " recs into the pipe\n";
-    return nullptr;
 }
 
 tpmms_args get_tpmms_args() {
