@@ -3,27 +3,31 @@
 //
 
 #include <c++/8/algorithm>
+#include <iostream>
 #include "Run.h"
 
 RunRecord::RunRecord(int runArrayIndex) {
     this->runIndex = runArrayIndex;
 }
 
-Run::Run(File *file, int runLen, int currentRunNumber) {
+Run::Run(File *file, long pageStart, long pageEnd) {
     this->file = file;
-    this->startPage = runLen * currentRunNumber;
+    this->startPage = pageStart;
     nextPage = startPage + 1;
     page = new Page();
     file->GetPage(page, startPage);
-    this->endPage = min((off_t) (runLen * (currentRunNumber + 1)) - 1, file->GetLength() - 1);
+    this->endPage = pageEnd;
 }
 
 Run::~Run() = default;
 
 int Run::getFirstRecord(Record *firstOne) {
+    //cout << "dbg 2" << endl;
     if (page->GetFirst(firstOne) != 1) {
-        if (nextPage >= endPage) return 0;
-
+        //cout << "dbg 3 "  << startPage << " "<< endPage<< " "<< nextPage << endl;
+        if (nextPage >= endPage) {
+            return 0;
+        }
         file->GetPage(page, nextPage++);
         return page->GetFirst(firstOne);
     }

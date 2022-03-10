@@ -23,7 +23,7 @@ private:
 
 
 public:
-    Run(File *file, int runLen, int currentRunNumber);
+    Run(File *file, long pageStart, long pageEnd);
     ~Run();
     int getFirst(RunRecord *rr);
     int getFirstRecord(Record *firstOne);

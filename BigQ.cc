@@ -3,7 +3,7 @@
 #include <algorithm>
 
 
-void BigQ::sortAndWriteRun(File *file, OrderMaker *sortOrder, const vector<Page *>& pages){
+Run& BigQ::sortAndWriteRun(File *file, OrderMaker *sortOrder, const vector<Page *>& pages){
     // Sort Records
     vector<Record *> records;
     CustomRecordComparator recComparator(sortOrder);
@@ -20,10 +20,14 @@ void BigQ::sortAndWriteRun(File *file, OrderMaker *sortOrder, const vector<Page 
     int stat_filed = 0;
     int stat_repaged = 0;
     unsigned long stat_recordLen = records.size();
+    // File length is initialized with size 0. When the first page is added its size jumps to 2.
+    // that is why there cause of the wierd ternary operation.
+    long pageStart = file->GetLength() == 0 ? 0: file->GetLength() - 1;
+    long nextPage = pageStart;
     Page *pageToWrite = new Page();
     for(auto recordToWrite: records){
         if(pageToWrite->Append(recordToWrite) == 0){
-            file->AddPage(pageToWrite, file->GetLength());
+            file->AddPage(pageToWrite, nextPage++);
             pageToWrite->EmptyItOut();
             stat_filed += stat_repaged;
             stat_repaged = 0;
@@ -36,16 +40,19 @@ void BigQ::sortAndWriteRun(File *file, OrderMaker *sortOrder, const vector<Page 
         delete recordToWrite;
     }
     //process last page
-    file->AddPage(pageToWrite, file->GetLength());
-    pageToWrite->EmptyItOut();
-    stat_filed += stat_repaged;
-
+    if(pageToWrite->getNumRecs() > 0){
+        file->AddPage(pageToWrite, nextPage++);
+        pageToWrite->EmptyItOut();
+        stat_filed += stat_repaged;
+    }
+    Run* run = new Run(file,  pageStart, nextPage);
     // sanity checks
     if(stat_filed != stat_recordLen){
         cerr << "BAD: Some records haven't been written to file!"
                 " \n \t total records : " << stat_recordLen <<
                 "\n\t records written to file : " << stat_filed << endl;
     }
+    return *run;
 }
 
 /**
@@ -54,7 +61,7 @@ void BigQ::sortAndWriteRun(File *file, OrderMaker *sortOrder, const vector<Page 
  * 2. Sort each chuck individually
  * 3. Write the sorted chunks to disk
  */
-void BigQ::pass1(File *file, tpmms_args *args) {
+vector<Run>& BigQ::pass1(File *file, tpmms_args *args) {
     Pipe &in = args->in;
     OrderMaker &sortOrder = args->sortOrder;
     int runLen = args->runLen;
@@ -64,14 +71,15 @@ void BigQ::pass1(File *file, tpmms_args *args) {
     int stat_recordsFromPipe = 0;
     int stat_recordsIntoPage = 0;
     int stat_totalPageCount = 1;
+    auto  *runs = new vector<Run>();
     while(in.Remove(record) == 1){
         stat_recordsFromPipe++;
         if(page->Append(record) == 0){
             stat_totalPageCount++;
             pages.push_back(page);
             if(pages.size() == runLen){
-                sortAndWriteRun(file, &sortOrder, pages);
-
+                Run run  = sortAndWriteRun(file, &sortOrder, pages);
+                runs->push_back(run);
                 for(auto pagePtr: pages){
                     delete pagePtr;
                 }
@@ -95,13 +103,13 @@ void BigQ::pass1(File *file, tpmms_args *args) {
         pages.push_back(page);
     }
     if(!pages.empty()){
-        sortAndWriteRun(file, &sortOrder, pages);
+        Run run = sortAndWriteRun(file, &sortOrder, pages);
+        runs->push_back(run);
         for(auto pagePtr: pages){
             delete pagePtr;
         }
         pages.clear();
     }
-
     // sanity checks
     if(!pages.empty()){
         cerr <<"BAD: pages vector has not been cleared successfully!";
@@ -117,28 +125,21 @@ void BigQ::pass1(File *file, tpmms_args *args) {
         cerr <<"BAD: pages vector has not been cleared successfully!";
     }
     //cout << "in count " << stat_recordsFromPipe <<endl;
-
+    return *runs;
 }
 
 /**
  * Merge k sorted runs, and pump it to out.
  */
-void  BigQ::pass2(File *file, tpmms_args *args) {
+void  BigQ::pass2(File *file, tpmms_args *args, vector<Run> &runs) {
     int runCount = args->runCount;
-    int runLen = args->runLen;
     Pipe& out = args->out;
     auto sortOrder = args->sortOrder;
-
-    Run *runs[runCount];
-    for (int runNumber = 0; runNumber < runCount; runNumber++)
-    {
-        runs[runNumber] = new Run(file, runLen, runNumber);
-    }
 
     priority_queue<RunRecord *, vector<RunRecord *>, CustomRecordComparator> pqueue(&sortOrder);
     for (int runNumber = 0; runNumber < runCount; runNumber++) {
         auto *rr = new RunRecord(runNumber);
-        if (runs[runNumber]->getFirst(rr) == 1) {
+        if (runs[runNumber].getFirst(rr) == 1) {
             pqueue.push(rr);
         }
     }
@@ -153,12 +154,10 @@ void  BigQ::pass2(File *file, tpmms_args *args) {
             pqueue.pop();
 
             auto *nextRR = new RunRecord(runIndex);
-            if (runs[runIndex]->getFirst(nextRR) == 1) pqueue.push(nextRR);
+            if (runs[runIndex].getFirst(nextRR) == 1) pqueue.push(nextRR);
         }
     }
-    for (int runNumber = 0; runNumber < runCount; runNumber++) {
-        delete runs[runNumber];
-    }
+
     //cout << "out count"<< outCount << endl;
 }
 
@@ -168,20 +167,21 @@ File* BigQ::initFile(){
     return file;
 }
 
-void  BigQ::cleanUp(File *file, tpmms_args *args){
+void  BigQ::cleanUp(File *file, tpmms_args *args, vector<Run> &runs){
     file->Close();
     Pipe &out = args->out;
     out.ShutDown();
     remove("tmpBigQ.bin");
     delete file;
+    runs.clear();
 }
 
 void * tpmms(void *args) {
     auto *tpmmsArgs = (tpmms_args*) args;
     File * file = BigQ::initFile();
-    BigQ::pass1(file, tpmmsArgs);
-    BigQ::pass2(file, tpmmsArgs);
-    BigQ::cleanUp(file, tpmmsArgs);
+    vector<Run> runs = BigQ::pass1(file, tpmmsArgs);
+    BigQ::pass2(file, tpmmsArgs, runs);
+    BigQ::cleanUp(file, tpmmsArgs, runs);
     return nullptr;
 }
 

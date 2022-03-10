@@ -44,7 +44,7 @@ class BigQ {
 private:
     pthread_t *worker = nullptr;
 
-    static void sortAndWriteRun(File *file, OrderMaker *sortOrder, const vector<Page *>& pages);
+    static Run& sortAndWriteRun(File *file, OrderMaker *sortOrder, const vector<Page *>& pages);
 
 public:
 	BigQ (Pipe &in, Pipe &out, OrderMaker &sortorder, int runlen);
@@ -52,11 +52,11 @@ public:
 
     static File * initFile();
 
-    static void pass1(File *file, tpmms_args *args);
+    static vector<Run>& pass1(File *file, tpmms_args *args);
 
-    static void pass2(File *file, tpmms_args *args);
+    static void pass2(File *file, tpmms_args *args, vector<Run> &runs);
 
-    static void cleanUp(File *file, tpmms_args *args);
+    static void cleanUp(File *file, tpmms_args *args, vector<Run> &runs);
 };
 
 void *tpmms(void *args);
