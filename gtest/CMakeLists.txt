@@ -16,6 +16,9 @@ add_executable(
         ../ComparisonEngine.cc ../ComparisonEngine.h ../Schema.cc ../Schema.h ../File.cc ../File.h ../Run.cpp ../Run.h ../BigQ.cc ../BigQ.h
         ../Pipe.cc ../Pipe.h ../y.tab.o ../lex.yy.o testHelper.cpp testHelper.h)
 
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
 target_link_libraries(a2_1_gtest gtest gtest_main)
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)

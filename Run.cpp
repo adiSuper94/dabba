@@ -14,17 +14,18 @@ Run::Run(File *file, long pageStart, long pageEnd) {
     this->file = file;
     this->startPage = pageStart;
     nextPage = startPage + 1;
-    page = new Page();
-    file->GetPage(page, startPage);
+    page = nullptr;
     this->endPage = pageEnd;
 }
 
 Run::~Run() = default;
 
 int Run::getFirstRecord(Record *firstOne) {
-    //cout << "dbg 2" << endl;
+    if(page == nullptr){
+        page = new Page();
+        file->GetPage(page, startPage);
+    }
     if (page->GetFirst(firstOne) != 1) {
-        //cout << "dbg 3 "  << startPage << " "<< endPage<< " "<< nextPage << endl;
         if (nextPage >= endPage) {
             return 0;
         }

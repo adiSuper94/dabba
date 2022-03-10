@@ -24,8 +24,12 @@ TEST(BigQTestSuite, init)
 TEST(BigQTestSuite, cleanup){
     tpmms_args args = get_tpmms_args();
     File* file = BigQ::initFile();
-    BigQ::cleanUp(file, &args);
+    vector<class Run> runs;
+    class Run run(file, 0, 0);
+    runs.push_back(run);
+    BigQ::cleanUp(file, &args, runs);
     EXPECT_EQ(isFileOnFS(fileName), false);
+    EXPECT_EQ(runs.size(), 0);
 }
 
 
