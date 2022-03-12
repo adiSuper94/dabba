@@ -3,6 +3,7 @@ cmake-build-debug
 .vscode
 build
 *.o
-report
-.vscode/configurationCache.log
-.vscode/targets.log
+*.out
+lex.yy.c
+y.tab.c
+y.tab.h
