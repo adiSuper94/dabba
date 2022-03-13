@@ -6,24 +6,17 @@
 #include "Record.h"
 #include "Schema.h"
 #include "TwoWayList.h"
-
-typedef enum { heap, sorted, tree } fType;
+#include "Defs.h"
+#include "BaseDBFile.h"
 
 // stub DBFile header..replace it with your own DBFile.h
 
 class DBFile {
  private:
-  bool eof, isPageDirty;
-  char *filePath;
-  off_t currPageIndex;
-  off_t readPageIndex;
-  File file;
-  Record *currentRecord;
-  Page *page;
+  BaseDBFile *dbFile = nullptr;
 
  public:
   DBFile();
-
   int Create(const char *fpath, fType file_type, void *startup);
   int Open(const char *fpath);
   int Close();

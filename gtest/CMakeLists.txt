@@ -14,7 +14,7 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR} ${gmock_SOUR
 add_executable(
         a2_1_gtest a2_1_test.cc ../DBFile.h ../DBFile.cc ../Record.cc ../Record.h ../Comparison.cc ../Comparison.h
         ../ComparisonEngine.cc ../ComparisonEngine.h ../Schema.cc ../Schema.h ../File.cc ../File.h ../Run.cpp ../Run.h ../BigQ.cc ../BigQ.h
-        ../Pipe.cc ../Pipe.h ../y.tab.o ../lex.yy.o testHelper.cpp testHelper.h)
+        ../Pipe.cc ../Pipe.h ../y.tab.o ../lex.yy.o testHelper.cpp testHelper.h ../BaseDBFile.h ../HeapDBFile.cpp ../HeapDBFile.h)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
