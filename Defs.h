@@ -4,6 +4,7 @@
 #define MAX_ORS 20
 
 #define PAGE_SIZE 131072
+#define DEFAULT_PIPE_SIZE 128
 
 enum Target { Left, Right, Literal };
 enum CompOperator { LessThan, GreaterThan, Equals };

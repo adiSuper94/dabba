@@ -1,23 +1,33 @@
 //
-// Created by adisuper on 3/12/22.
+// Created by adisuper on 3/21/22.
 //
 
 #pragma once
 
-#include "BaseDBFile.h"
 
-class HeapDBFile: public BaseDBFile{
+#include "BaseDBFile.h"
+#include "Pipe.h"
+
+struct SortInfo { OrderMaker *myOrder; int runLength;
+};
+class SortedDBFile: public BaseDBFile{
 private:
     File file;
-    bool eof, isPageDirty;
     char *filePath;
+    Pipe *in, *out;
+    bool writeMode = false;
+    bool eof;
     off_t currPageIndex;
     off_t readPageIndex;
     Record *currentRecord;
     Page *page;
+    SortInfo *sortInfo;
 
+    bool ensureWriteMode();
+    bool ensureReadMode();
+    off_t getNextRecord(Record &record, Page &page, off_t pagePtr);
 public:
-    HeapDBFile();
+    SortedDBFile();
     int Create(const char *fpath, fType file_type, void *startup) override;
     int Open(const char *fpath) override;
     int Close() override;
@@ -28,3 +38,6 @@ public:
     int GetNext(Record &fetchMe, CNF &cnf, Record &literal) override;
 
 };
+
+
+//PROJECT1_SORTEDDBFILE_H

@@ -7,17 +7,17 @@ ifdef linux
 tag = -n
 endif
 
-test.out: Record.o Comparison.o ComparisonEngine.o Schema.o File.o Run.o BigQ.o HeapDBFile.o DBFile.o Pipe.o y.tab.o lex.yy.o test.o
-	$(CC) -o test.out Record.o Comparison.o ComparisonEngine.o Schema.o File.o Run.o BigQ.o HeapDBFile.o DBFile.o Pipe.o y.tab.o lex.yy.o test.o -lfl -lpthread
+test.out: Record.o Comparison.o ComparisonEngine.o Schema.o File.o Run.o BigQ.o BaseDBFile.o HeapDBFile.o DBFile.o Pipe.o y.tab.o lex.yy.o test.o
+	$(CC) -o test.out Record.o Comparison.o ComparisonEngine.o Schema.o File.o Run.o BigQ.o BaseDBFile.o HeapDBFile.o DBFile.o Pipe.o y.tab.o lex.yy.o test.o -lfl -lpthread
 	
-a1test.out: Record.o Comparison.o ComparisonEngine.o Schema.o File.o Run.o HeapDBFile.o DBFile.o Pipe.o y.tab.o lex.yy.o a1-test.o
-	$(CC) -o a1test.out Record.o Comparison.o ComparisonEngine.o Schema.o File.o Run.o HeapDBFile.o DBFile.o Pipe.o y.tab.o lex.yy.o a1-test.o -lfl
+a1test.out: Record.o Comparison.o ComparisonEngine.o Schema.o File.o Run.o BaseDBFile.o HeapDBFile.o DBFile.o Pipe.o y.tab.o lex.yy.o a1-test.o
+	$(CC) -o a1test.out Record.o Comparison.o ComparisonEngine.o Schema.o File.o Run.o BaseDBFile.o HeapDBFile.o DBFile.o Pipe.o y.tab.o lex.yy.o a1-test.o -lfl
 	
 test.o: test.cc
-	$(CC) -g -c test.cc
+	$(CC) -g -c test.cc	
 
-test1.out: Record.o Comparison.o ComparisonEngine.o Schema.o File.o DBFile.o HeapDBFile.o y.tab.o lex.yy.o test.o
-	$(CC) -o test1.out Record.o Comparison.o ComparisonEngine.o Schema.o File.o DBFile.o HeapDBFile.o y.tab.o lex.yy.o test1.o -lfl
+test1.out: Record.o Comparison.o ComparisonEngine.o Schema.o File.o DBFile.o BaseDBFile.o HeapDBFile.o y.tab.o lex.yy.o test.o
+	$(CC) -o test1.out Record.o Comparison.o ComparisonEngine.o Schema.o File.o DBFile.o BaseDBFile.o HeapDBFile.o y.tab.o lex.yy.o test1.o -lfl
 
 test1.o: test1.cpp
 	$(CC) -g -c test1.cpp
@@ -45,6 +45,9 @@ DBFile.o: DBFile.cc
 
 HeapDBFile.o: HeapDBFile.cpp
 	$(CC) -g -c HeapDBFile.cpp
+
+BaseDBFile.o: BaseDBFile.cpp
+	$(CC) -g -c BaseDBFile.cpp
 
 File.o: File.cc
 	$(CC) -g -c -v File.cc

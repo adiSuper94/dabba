@@ -3,11 +3,15 @@
 //
 
 #include <iostream>
+#include <algorithm>
+#include <fstream>
 #include "HeapDBFile.h"
 
 
 int HeapDBFile::Create(const char *f_path, fType f_type, void *startup) {
+
     if (f_type == fType::heap) {
+        HeapDBFile::writeDBMetaData(f_path, heap);
         if (f_path == nullptr) return 0;
         cout << "Creating heap file" << endl;
         file.Open(0, (char *)f_path);
@@ -19,14 +23,24 @@ int HeapDBFile::Create(const char *f_path, fType f_type, void *startup) {
         return 1;
     }else{
         cerr << "BAD: create called on HeapDBFile with wrong file type." << endl;
+        exit(EXIT_FAILURE);
     }
-    return 0;
 }
 
 int HeapDBFile::Open(const char *f_path) {
     if (f_path == nullptr) {
         return 0;
     }
+    string metaPath = HeapDBFile::getMetaFileName(f_path);
+    fstream metaFile;
+    metaFile.open(metaPath, ios::in);
+    string type;
+    getline(metaFile, type);
+    if (type != "heap"){
+        cerr << "BAD: Open called on HeapDBFile, but db-meta file with right type not found." << endl;
+        exit(1);
+    }
+    metaFile.close();
     file.Open(1, (char *)f_path);
     return 1;
 }

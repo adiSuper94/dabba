@@ -9,10 +9,16 @@
 
 // stub file .. replace it with your own DBFile.cc
 
-DBFile::DBFile() { this->dbFile = new HeapDBFile(); }
+DBFile::DBFile() { }
 
 int DBFile::Create(const char *f_path, fType f_type, void *startup) {
-  return this->dbFile->Create(f_path, f_type, startup);
+    if(f_type == heap){
+        this->dbFile = new HeapDBFile();
+    }else{
+        cerr << "BAD: create called with invalid file type." << endl;
+        exit(EXIT_FAILURE);
+    }
+    return this->dbFile->Create(f_path, heap, startup);
 }
 
 void DBFile::Load(Schema &f_schema, const char *loadpath) {
