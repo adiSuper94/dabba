@@ -101,6 +101,16 @@ void OrderMaker ::Print() {
   }
 }
 
+void OrderMaker::AddOrder(int whichAtt, Type whichType) {
+    if (numAtts >= MAX_ANDS) {
+        cerr << "Maximum ands should be less than : " << MAX_ANDS << endl;
+        exit(1);
+    }
+
+    whichAtts[numAtts] = whichAtt;
+    whichTypes[numAtts] = whichType;
+    numAtts++;
+}
 int CNF ::GetSortOrders(OrderMaker &left, OrderMaker &right) {
   // initialize the size of the OrderMakers
   left.numAtts = 0;
@@ -556,4 +566,30 @@ void CNF ::GrowFromParseTree(struct AndList *parseTree, Schema *mySchema, Record
 
   remove("sdafdsfFFDSDA");
   remove("hkljdfgkSDFSDF");
+}
+
+void CNF::GetCommonSortOrder(OrderMaker &dbFileSortOrder, OrderMaker &result) {
+    result.numAtts = 0;
+    for(int i = 0; i < dbFileSortOrder.numAtts; i++){
+        bool foundAtt = false;
+        for(int j = 0; j < numAnds; j++){
+            if(orLens[j] != 1 || orList[j][0].op != Equals){
+                continue;
+            }
+            if (orList[i][0].operand1 != Literal && dbFileSortOrder.whichAtts[i] == orList[i][0].whichAtt1) {
+                result.whichAtts[result.numAtts] = orList[i][0].whichAtt2;
+                result.whichTypes[result.numAtts] = dbFileSortOrder.whichTypes[i];
+
+                result.numAtts++;
+                foundAtt = true;
+            } else if (orList[i][0].operand2 != Literal && dbFileSortOrder.whichAtts[i] == orList[i][0].whichAtt2) {
+                result.whichAtts[result.numAtts] = orList[i][0].whichAtt1;
+                result.whichTypes[result.numAtts] = dbFileSortOrder.whichTypes[i];
+
+                result.numAtts++;
+                foundAtt = true;
+            }
+        }
+        if (!foundAtt) break;
+    }
 }

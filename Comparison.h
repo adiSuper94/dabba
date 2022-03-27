@@ -35,12 +35,12 @@ class OrderMaker {
   friend class ComparisonEngine;
   friend class CNF;
 
-  int numAtts;
 
-  int whichAtts[MAX_ANDS];
-  Type whichTypes[MAX_ANDS];
 
  public:
+    int numAtts;
+    int whichAtts[MAX_ANDS];
+    Type whichTypes[MAX_ANDS];
   // creates an empty OrdermMaker
   OrderMaker();
 
@@ -50,6 +50,8 @@ class OrderMaker {
 
   // print to the screen
   void Print();
+
+    void AddOrder(int whichAtt, Type whichType);
 };
 
 class Record;
@@ -72,6 +74,8 @@ class CNF {
   // only if it is impossible to determine an acceptable ordering
   // for the given comparison
   int GetSortOrders(OrderMaker &left, OrderMaker &right);
+
+  void GetCommonSortOrder(OrderMaker &dbFileSortOrder, OrderMaker &result);
 
   // print the comparison structure to the screen
   void Print();

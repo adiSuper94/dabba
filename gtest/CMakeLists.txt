@@ -16,10 +16,16 @@ add_executable(
         ../ComparisonEngine.cc ../ComparisonEngine.h ../Schema.cc ../Schema.h ../File.cc ../File.h ../Run.cpp ../Run.h ../BigQ.cc ../BigQ.h
         ../Pipe.cc ../Pipe.h ../y.tab.o ../lex.yy.o testHelper.cpp testHelper.h ../BaseDBFile.h ../HeapDBFile.cpp ../HeapDBFile.h ../BaseDBFile.cpp ../SortedDBFile.cpp ../SortedDBFile.h)
 
+add_executable(
+        a2_2_gtest a2_2_test.cpp ../DBFile.h ../DBFile.cc ../Record.cc ../Record.h ../Comparison.cc ../Comparison.h
+        ../ComparisonEngine.cc ../ComparisonEngine.h ../Schema.cc ../Schema.h ../File.cc ../File.h ../Run.cpp ../Run.h ../BigQ.cc ../BigQ.h
+        ../Pipe.cc ../Pipe.h ../y.tab.o ../lex.yy.o testHelper.cpp testHelper.h ../BaseDBFile.h ../HeapDBFile.cpp ../HeapDBFile.h ../BaseDBFile.cpp ../SortedDBFile.cpp ../SortedDBFile.h)
+
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 
 target_link_libraries(a2_1_gtest gtest gtest_main)
+target_link_libraries(a2_2_gtest gtest gtest_main)
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)

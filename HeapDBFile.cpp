@@ -36,7 +36,7 @@ int HeapDBFile::Open(const char *f_path) {
     metaFile.open(metaPath, ios::in);
     string type;
     getline(metaFile, type);
-    if (type != "heap"){
+    if (type != to_string(heap)){
         cerr << "BAD: Open called on HeapDBFile, but db-meta file with right type not found." << endl;
         exit(1);
     }

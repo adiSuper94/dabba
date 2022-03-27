@@ -22,10 +22,13 @@ private:
     Record *currentRecord;
     Page *page;
     SortInfo *sortInfo;
+    OrderMaker *query;
+    bool queryInitialized = false;
 
     bool ensureWriteMode();
     bool ensureReadMode();
     off_t getNextRecord(Record &record, Page &page, off_t pagePtr);
+    int writeDBMetaData(const char *f_path, void *startup);
 public:
     SortedDBFile();
     int Create(const char *fpath, fType file_type, void *startup) override;
@@ -37,6 +40,7 @@ public:
     int GetNext(Record &fetchMe) override;
     int GetNext(Record &fetchMe, CNF &cnf, Record &literal) override;
 
+    int binSearch(CNF &cnf, Record &record);
 };
 
 
