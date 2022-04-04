@@ -1,57 +1,67 @@
 #pragma once
 
-#include "Comparison.h"
-#include "ComparisonEngine.h"
-#include "File.h"
 #include "Record.h"
 #include "Schema.h"
+#include "File.h"
+#include "Comparison.h"
+#include "ComparisonEngine.h"
+#include <stdlib.h>
 
 // This stores an individual comparison that is part of a CNF
 class Comparison {
-  friend class ComparisonEngine;
-  friend class CNF;
 
-  Target operand1;
-  int whichAtt1;
-  Target operand2;
-  int whichAtt2;
+	friend class ComparisonEngine;
+	friend class CNF;
 
-  Type attType;
+	Target operand1;
+	int whichAtt1;
+	Target operand2;
+	int whichAtt2;
 
-  CompOperator op;
+	Type attType;
 
- public:
-  Comparison();
+	CompOperator op;
 
-  // copy constructor
-  Comparison(const Comparison &copyMe);
+public:
 
-  // print to the screen
-  void Print();
+	Comparison();
+
+	//copy constructor
+	Comparison(const Comparison &copyMe);
+
+	// print to the screen
+	void Print ();
 };
+
+
+class Schema;
 
 // This structure encapsulates a sort order for records
 class OrderMaker {
-  friend class ComparisonEngine;
-  friend class CNF;
 
+	friend class ComparisonEngine;
+	friend class CNF;
 
+public:
 
- public:
-    int numAtts;
-    int whichAtts[MAX_ANDS];
-    Type whichTypes[MAX_ANDS];
-  // creates an empty OrdermMaker
-  OrderMaker();
+	int numAtts;
 
-  // create an OrderMaker that can be used to sort records
-  // based upon ALL of their attributes
-  OrderMaker(Schema *schema);
+	int whichAtts[MAX_ANDS];
+	Type whichTypes[MAX_ANDS];
 
-  // print to the screen
-  void Print();
+	
+
+	// creates an empty OrdermMaker
+	OrderMaker();
+
+	// create an OrderMaker that can be used to sort records
+	// based upon ALL of their attributes
+	OrderMaker(Schema *schema);
 
     void AddOrder(int whichAtt, Type whichType);
+
+    // print to the screen
+	void Print ();
 };
 
 class Record;
@@ -60,11 +70,12 @@ class Record;
 // during query execution
 
 class CNF {
-  friend class ComparisonEngine;
 
-  Comparison orList[MAX_ANDS][MAX_ORS];
+	friend class ComparisonEngine;
 
-  int orLens[MAX_ANDS];
+	Comparison orList[MAX_ANDS][MAX_ORS];
+	
+	int orLens[MAX_ANDS];
   int numAnds;
 
  public:

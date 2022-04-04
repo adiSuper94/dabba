@@ -19,11 +19,11 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(Project1 main.cc Record.cc Record.h
         Comparison.cc Comparison.h ComparisonEngine.cc ComparisonEngine.h DBFile.cc DBFile.h File.cc File.h
-        BigQ.cc BigQ.h test.cc test.h Pipe.cc Pipe.h TwoWayList.cc TwoWayList.h Schema.h Schema.cc ParseTree.h
+        BigQ.cc BigQ.h test2.cc test2.h Pipe.cc Pipe.h TwoWayList.cc TwoWayList.h Schema.h Schema.cc ParseTree.h
         Run.cpp Run.h BaseDBFile.h BaseDBFile.cpp HeapDBFile.cpp HeapDBFile.h
         ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS} SortedDBFile.cpp SortedDBFile.h)
 
-add_executable(default_tests test.cc test.h Record.cc Record.h Comparison.cc Comparison.h ComparisonEngine.cc ComparisonEngine.h
+add_executable(default_tests test2.cc test2.h Record.cc Record.h Comparison.cc Comparison.h ComparisonEngine.cc ComparisonEngine.h
         Schema.cc Schema.h File.cc File.h Run.cpp Run.h BigQ.cc BigQ.h DBFile.cc DBFile.h Pipe.cc Pipe.h
         y.tab.c lex.yy.c BaseDBFile.h BaseDBFile.cpp HeapDBFile.cpp HeapDBFile.h test1.cpp test1.h
         ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS} SortedDBFile.cpp SortedDBFile.h)

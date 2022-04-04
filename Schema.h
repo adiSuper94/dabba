@@ -1,51 +1,64 @@
-#pragma once
+
+#ifndef SCHEMA_H
+#define SCHEMA_H
 
 #include <stdio.h>
-
+#include "Record.h"
+#include "Schema.h"
+#include "File.h"
 #include "Comparison.h"
 #include "ComparisonEngine.h"
-// I added this
-#include "Defs.h"
-#include "File.h"
-#include "Record.h"
 
+struct att_pair {
+	char *name;
+	Type type;
+};
 struct Attribute {
-  char *name;
-  Type myType;
+
+	char *name;
+	Type myType;
 };
 
 class OrderMaker;
 class Schema {
-  // gives the attributes in the schema
-  int numAtts;
-  Attribute *myAtts;
 
-  // gives the physical location of the binary file storing the relation
-  const char *fileName;
+	// gives the attributes in the schema
+	int numAtts;
+	Attribute *myAtts;
 
-  friend class Record;
+	// gives the physical location of the binary file storing the relation
+	char *fileName;
 
- public:
-  // gets the set of attributes, but be careful with this, since it leads
-  // to aliasing!!!
-  Attribute *GetAtts();
+	friend class Record;
 
-  // returns the number of attributes
-  int GetNumAtts();
+public:
 
-  // this finds the position of the specified attribute in the schema
-  // returns a -1 if the attribute is not present in the schema
-  int Find(const char *attName);
+	// gets the set of attributes, but be careful with this, since it leads
+	// to aliasing!!!
+	Attribute *GetAtts ();
 
-  // this finds the type of the given attribute
-  Type FindType(const char *attName);
+	// returns the number of attributes
+	int GetNumAtts ();
 
-  // this reads the specification for the schema in from a file
-  Schema(const char *fName, const char *relName);
+	// this finds the position of the specified attribute in the schema
+	// returns a -1 if the attribute is not present in the schema
+	int Find (char *attName);
 
-  // this constructs a sort order structure that can be used to
-  // place a lexicographic ordering on the records using this type of schema
-  int GetSortOrder(OrderMaker &order);
+	// this finds the type of the given attribute
+	Type FindType (char *attName);
 
-  ~Schema();
+	// this reads the specification for the schema in from a file
+	Schema (char *fName, char *relName);
+
+	// this composes a schema instance in-memory
+	Schema (char *fName, int num_atts, Attribute *atts);
+
+	// this constructs a sort order structure that can be used to
+	// place a lexicographic ordering on the records using this type of schema
+	int GetSortOrder (OrderMaker &order);
+
+	~Schema ();
+
 };
+
+#endif

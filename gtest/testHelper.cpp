@@ -6,7 +6,7 @@
 #include <fstream>
 #include "testHelper.h"
 #include "../DBFile.h"
-#include "../test.h"
+#include "../test2.h"
 
 void producer (Pipe &myPipe) {
 
