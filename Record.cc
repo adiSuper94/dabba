@@ -468,5 +468,13 @@ void Record :: Print (Schema *mySchema) {
 	cout << "\n";
 }
 
+int Record::GetAttribCount() {
+    if (bits == NULL) {
+        return 0;
+    }
+
+    return ((int *) bits)[1] / sizeof(int) - 1;
+}
+
 
 
