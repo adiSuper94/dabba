@@ -224,6 +224,39 @@ void DuplicateRemoval::Run(Pipe &inPipe, Pipe &outPipe, Schema &mySchema) {
     pthread_create(&thread, nullptr, worker_routine, (void *) args);
 }
 
+void *Sum::worker_routine(void *args) {
+    auto *runArgs = (SumRunArgs*) args;
+    int intSum=0;
+    double doubleSum = 0.0;
+    Record rec;
+    while (runArgs->inPipe.Remove(&rec)){
+        int currInt = 0;
+        double  currDouble = 0.0;
+        runArgs->computeMe.Apply(rec, currInt, currDouble);
+        intSum += currInt;
+        doubleSum += currDouble;
+    }
+    if(intSum  == 0){
+        Attribute att = {"attrib_1", Double};
+        Schema doubleSchema("double_sum_schema", 1, &att);
+        Record r;
+        r.ComposeRecord(&doubleSchema, to_string(doubleSum).c_str());
+        runArgs->outPipe.Insert(&r);
+    }else{
+        Attribute att = {"attrib_1", Int};
+        Schema intSchema("int_sum_schema", 1, &att);
+        Record r;
+        r.ComposeRecord(&intSchema, to_string(intSum).c_str());
+        runArgs->outPipe.Insert(&r);
+    }
+    return nullptr;
+}
+
+void Sum::Run(Pipe &inPipe, Pipe &outPipe, Function &computeMe) {
+    auto *args = new SumRunArgs(inPipe, outPipe, computeMe);
+    pthread_create(&thread, nullptr, worker_routine, (void *) args);
+}
+
 void RelationalOp::WaitUntilDone() {
     pthread_join(thread, nullptr);
 }
@@ -246,3 +279,6 @@ Join::JoinRunArgs::JoinRunArgs(Pipe &inPipeL, Pipe &inPipeR, Pipe &outPipe, CNF 
 
 DuplicateRemoval::DuplicateRemovalRunArgs::DuplicateRemovalRunArgs(Pipe &inPipe, Pipe &outPipe, Schema &mySchema, int runLength)
         : inPipe(inPipe), outPipe(outPipe), mySchema(mySchema), runLength(runLength) {}
+
+Sum::SumRunArgs::SumRunArgs(Pipe &inPipe, Pipe &outPipe, Function &computeMe) : inPipe(inPipe), outPipe(outPipe),
+                                                                                computeMe(computeMe) {}

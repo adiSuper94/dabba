@@ -110,10 +110,18 @@ private:
 };
 class Sum : public RelationalOp {
 private:
+    class SumRunArgs{
+    public:
+        Pipe &inPipe;
+        Pipe &outPipe;
+        Function &computeMe;
+
+        SumRunArgs(Pipe &inPipe, Pipe &outPipe, Function &computeMe);
+    };
     static void * worker_routine(void *args);
 
 public:
-	void Run (Pipe &inPipe, Pipe &outPipe, Function &computeMe) { }
+	void Run (Pipe &inPipe, Pipe &outPipe, Function &computeMe);
 };
 class GroupBy : public RelationalOp {
 	public:
