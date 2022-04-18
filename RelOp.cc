@@ -237,17 +237,19 @@ void *Sum::worker_routine(void *args) {
         doubleSum += currDouble;
     }
     if(intSum  == 0){
-        Attribute att = {"attrib_1", Double};
-        Schema doubleSchema("double_sum_schema", 1, &att);
+        Attribute att = {"double", Double};
+        Schema doubleSchema("out_sch", 1, &att);
         Record r;
-        r.ComposeRecord(&doubleSchema, to_string(doubleSum).c_str());
+        r.ComposeRecord(&doubleSchema, (to_string(doubleSum) + "|" ).c_str());
         runArgs->outPipe.Insert(&r);
+        runArgs->outPipe.ShutDown();
     }else{
-        Attribute att = {"attrib_1", Int};
-        Schema intSchema("int_sum_schema", 1, &att);
+        Attribute att = {"int", Int};
+        Schema intSchema("out_sch", 1, &att);
         Record r;
-        r.ComposeRecord(&intSchema, to_string(intSum).c_str());
+        r.ComposeRecord(&intSchema, (to_string(intSum) + "|" ).c_str());
         runArgs->outPipe.Insert(&r);
+        runArgs->outPipe.ShutDown();
     }
     return nullptr;
 }
@@ -257,6 +259,83 @@ void Sum::Run(Pipe &inPipe, Pipe &outPipe, Function &computeMe) {
     pthread_create(&thread, nullptr, worker_routine, (void *) args);
 }
 
+void *GroupBy::worker_routine(void *args) {
+    auto *runArgs = (GroupByRunArgs*) args;
+    Pipe bigQOutPipe(DEFAULT_PIPE_SIZE);
+    BigQ(runArgs->inPipe, bigQOutPipe, runArgs->groupAtts, runArgs->runLength);
+
+    Pipe sumInPipe(DEFAULT_PIPE_SIZE), sumOutPipe(DEFAULT_PIPE_SIZE);
+    Sum sum;
+    sum.Run(sumInPipe, sumOutPipe, runArgs->computeMe);
+    runArgs->outPipe.ShutDown();
+    int i = 0;
+    Record recs[2];
+    Record *temp = new Record();
+
+    ComparisonEngine comparisonEngine;
+    if (bigQOutPipe.Remove(&recs[i % 2])) {
+        temp->Copy(&recs[i % 2]);
+        sumInPipe.Insert(temp);
+        temp = new Record();
+        i++;
+        while (bigQOutPipe.Remove(&recs[i % 2])) {
+            if (comparisonEngine.Compare(&recs[(i + 1) % 2], &recs[i % 2], &runArgs->groupAtts) != 0) {
+                sumInPipe.ShutDown();
+                sumOutPipe.Remove(temp);
+                sum.WaitUntilDone();
+                AddRecordToGBPipe(runArgs->outPipe, &recs[(i + 1) % 2], temp, runArgs->groupAtts);
+                sumInPipe = *(new Pipe(DEFAULT_PIPE_SIZE));
+                sumOutPipe = *(new Pipe(DEFAULT_PIPE_SIZE));
+                sum.Run(sumInPipe, sumOutPipe, runArgs->computeMe);
+            }
+            temp->Copy(&recs[i % 2]);
+            sumInPipe.Insert(temp);
+            temp = new Record();
+            i++;
+        }
+        sumInPipe.ShutDown();
+        sumOutPipe.Remove(temp);
+        sum.WaitUntilDone();
+        AddRecordToGBPipe(runArgs->outPipe, &recs[(i + 1) % 2], temp, runArgs->groupAtts);
+    }
+    return nullptr;
+}
+
+void GroupBy::Run(Pipe &inPipe, Pipe &outPipe, OrderMaker &groupAtts, Function &computeMe) {
+    auto *args = new GroupByRunArgs(inPipe, outPipe, groupAtts, computeMe, this->runLength);
+    pthread_create(&thread, nullptr, worker_routine, (void *) args);
+}
+
+void GroupBy::AddRecordToGBPipe(Pipe &outPipe, Record *record, Record *sumRecord, OrderMaker &om) {
+
+    Schema groupAttributesSchema(om);
+    record->Project(om.whichAtts, om.numAtts, record->GetAttribCount());
+
+    Record groupRecord;
+    int numAttsLeft = sumRecord->GetAttribCount();
+    int numAttsRight = record->GetAttribCount();
+    int *attsToKeep = new int[numAttsLeft + numAttsRight];
+    int i = 0;
+    for (int j = 0; j < numAttsLeft; j++) attsToKeep[i++] = j;
+    for (int j = 0; j < numAttsRight; j++) attsToKeep[i++] = j;
+    groupRecord.MergeRecords(sumRecord, record, sumRecord->GetAttribCount(), record->GetAttribCount(), attsToKeep, numAttsRight + numAttsLeft, numAttsLeft);
+
+    outPipe.Insert(&groupRecord);
+}
+
+void *WriteOut::worker_routine(void *args) {
+    auto *runArgs = (WriteOutRunArgs*) args;
+    Record record;
+    while (runArgs->inPipe.Remove(&record)) {
+        record.Print(runArgs->mySchema, runArgs->outFile);
+    }
+    return nullptr;
+}
+
+void WriteOut::Run(Pipe &inPipe, FILE *outFile, Schema &mySchema) {
+    auto *args = new WriteOutRunArgs(inPipe, outFile, mySchema);
+    pthread_create(&thread, nullptr, worker_routine, (void *) args);
+}
 void RelationalOp::WaitUntilDone() {
     pthread_join(thread, nullptr);
 }
@@ -282,3 +361,10 @@ DuplicateRemoval::DuplicateRemovalRunArgs::DuplicateRemovalRunArgs(Pipe &inPipe,
 
 Sum::SumRunArgs::SumRunArgs(Pipe &inPipe, Pipe &outPipe, Function &computeMe) : inPipe(inPipe), outPipe(outPipe),
                                                                                 computeMe(computeMe) {}
+
+GroupBy::GroupByRunArgs::GroupByRunArgs(Pipe &inPipe, Pipe &outPipe, OrderMaker &groupAtts, Function &computeMe, int runLength)
+        : inPipe(inPipe), outPipe(outPipe), groupAtts(groupAtts), computeMe(computeMe) , runLength(runLength){}
+
+WriteOut::WriteOutRunArgs::WriteOutRunArgs(Pipe &inPipe, FILE *outFile, Schema &mySchema) : inPipe(inPipe),
+                                                                                            outFile(outFile),
+                                                                                            mySchema(mySchema) {}

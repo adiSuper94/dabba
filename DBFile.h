@@ -27,4 +27,8 @@ class DBFile {
   void Add(Record &addMe);
   int GetNext(Record &fetchMe);
   int GetNext(Record &fetchMe, CNF &cnf, Record &literal);
+
+    fType readMD(const char *fpath);
+
+    void initDBFile(fType type);
 };

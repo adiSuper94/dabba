@@ -32,7 +32,6 @@ private:
 	public:
 
 	void Run (DBFile &inFile, Pipe &outPipe, CNF &selOp, Record &literal);
-	void Use_n_Pages (int n);
     static void * worker_routine(void *args);
 
 };
@@ -124,10 +123,33 @@ public:
 	void Run (Pipe &inPipe, Pipe &outPipe, Function &computeMe);
 };
 class GroupBy : public RelationalOp {
-	public:
-	void Run (Pipe &inPipe, Pipe &outPipe, OrderMaker &groupAtts, Function &computeMe) { }
+private:
+    class GroupByRunArgs{
+    public:
+        Pipe &inPipe;
+        Pipe &outPipe;
+        OrderMaker &groupAtts;
+        Function &computeMe;
+        int runLength;
+
+        GroupByRunArgs(Pipe &inPipe, Pipe &outPipe, OrderMaker &groupAtts, Function &computeMe, int runLength);
+    };
+    static void * worker_routine(void *args);
+public:
+	void Run (Pipe &inPipe, Pipe &outPipe, OrderMaker &groupAtts, Function &computeMe);
+
+    static void AddRecordToGBPipe(Pipe &outPipe, Record *record, Record *sumRecord, OrderMaker &om);
 };
 class WriteOut : public RelationalOp {
+private:
+    class WriteOutRunArgs{
+    public:
+        Pipe &inPipe;
+        FILE *outFile;
+        Schema &mySchema;
+        WriteOutRunArgs(Pipe &inPipe, FILE *outFile, Schema &mySchema);
+    };
+    static void * worker_routine(void *args);
 	public:
-	void Run (Pipe &inPipe, FILE *outFile, Schema &mySchema) { }
+	void Run (Pipe &inPipe, FILE *outFile, Schema &mySchema);
 };

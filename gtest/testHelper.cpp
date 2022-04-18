@@ -6,7 +6,6 @@
 #include <fstream>
 #include "testHelper.h"
 #include "../DBFile.h"
-#include "../test2.h"
 
 void producer (Pipe &myPipe) {
 
@@ -35,10 +34,10 @@ void producer (Pipe &myPipe) {
 tpmms_args get_tpmms_args() {
     Pipe in(64);
     Pipe out(64);
-    auto *schema = new Schema(catalog_path, "nation");
-    OrderMaker om(schema);
-    tpmms_args args(in, out, om, 16, 0);
-    return args;
+    //auto *schema = new Schema(catalog_path, "nation");
+    //OrderMaker om(schema);
+    //tpmms_args args(in, out, om, 16, 0);
+    //return args;
 }
 
 bool isFileOnFS(const std::string& name) {

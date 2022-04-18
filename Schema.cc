@@ -59,7 +59,14 @@ Schema :: Schema (char *fpath, int num_atts, Attribute *atts) {
 		myAtts[i].name = strdup (atts[i].name);
 	}
 }
-
+Schema::Schema(OrderMaker &order) {
+    numAtts = order.numAtts;
+    myAtts = new Attribute[numAtts];
+    for (int i = 0; i < numAtts; i++) {
+        myAtts[i].myType = order.whichTypes[i];
+        myAtts[i].name = reinterpret_cast<char *>(order.whichAtts[i]);
+    }
+}
 Schema :: Schema (char *fName, char *relName) {
 
 	FILE *foo = fopen (fName, "r");

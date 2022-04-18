@@ -93,13 +93,10 @@ void init_SF_c (char *pred_str, int numpgs) {
 // select * from partsupp where ps_supplycost <1.03 
 // expected output: 31 records
 void q1 () {
-
 	char *pred_ps = "(ps_supplycost < 1.03)";
 	init_SF_ps (pred_ps, 100);
-
 	SF_ps.Run (dbf_ps, _ps, cnf_ps, lit_ps);
 	SF_ps.WaitUntilDone ();
-
 	int cnt = clear_pipe (_ps, ps->schema (), true);
 	cout << "\n\n query1 returned " << cnt << " records \n";
 
@@ -129,7 +126,7 @@ void q2 () {
 
 	Attribute att3[] = {IA, SA, DA};
 	Schema out_sch ("out_sch", numAttsOut, att3);
-	int cnt = clear_pipe (_p, p->schema (), true);
+    int cnt = clear_pipe (_out, &out_sch, true);
 
 	cout << "\n\n query2 returned " << cnt << " records \n";
 
@@ -142,7 +139,6 @@ void q3 () {
 
 	char *pred_s = "(s_suppkey = s_suppkey)";
 	init_SF_s (pred_s, 100);
-
 	Sum T;
 		// _s (input pipe)
 		Pipe _out (1);
@@ -156,7 +152,6 @@ void q3 () {
 
 	SF_s.WaitUntilDone ();
 	T.WaitUntilDone ();
-
 	Schema out_sch ("out_sch", 1, &DA);
 	int cnt = clear_pipe (_out, &out_sch, true);
 
@@ -205,6 +200,7 @@ void q4 () {
 	J.Run (_s, _ps, _s_ps, cnf_p_ps, lit_p_ps);
 	T.Run (_s_ps, _out, func);
 
+    SF_s.WaitUntilDone();
 	SF_ps.WaitUntilDone ();
 	J.WaitUntilDone ();
 	T.WaitUntilDone ();
@@ -245,7 +241,7 @@ void q5 () {
 
 	SF_ps.WaitUntilDone ();
 	P_ps.WaitUntilDone ();
-	D.WaitUntilDone ();
+    D.WaitUntilDone ();
 	W.WaitUntilDone ();
 
 	cout << " query5 finished..output written to file " << fwpath << "\n";

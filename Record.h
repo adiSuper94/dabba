@@ -70,6 +70,8 @@ public:
 	void Print (Schema *mySchema);
 
     int GetAttribCount();
+
+    void Print(Schema mySchema, FILE *outF);
 };
 
 #endif

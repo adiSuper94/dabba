@@ -37,8 +37,8 @@ int HeapDBFile::Open(const char *f_path) {
     string type;
     getline(metaFile, type);
     if (type != to_string(heap)){
-        cerr << "BAD: Open called on HeapDBFile, but db-meta file with right type not found." << endl;
-        exit(1);
+        //cerr << "BAD: Open called on HeapDBFile, but db-meta file with right type not found. but still continuing" << endl;
+        //exit(1);
     }
     metaFile.close();
     file.Open(1, (char *)f_path);
