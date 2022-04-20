@@ -22,7 +22,7 @@ struct Attribute {
 class OrderMaker;
 class Schema {
 
-    // gives the attributes in the schema
+	// gives the attributes in the schema
 	int numAtts;
 	Attribute *myAtts;
 

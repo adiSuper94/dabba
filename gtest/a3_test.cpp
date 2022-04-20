@@ -2,7 +2,7 @@
 // Created by adisuper on 05/04/2022.
 //
 #include <gtest/gtest.h>
-#include "../test.h"
+#include "../test3.h"
 #include "../BigQ.h"
 #include "../RelOp.h"
 #include "../Schema.h"
