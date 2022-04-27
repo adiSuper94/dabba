@@ -1,0 +1,19 @@
+Relation: nation tupleCount: 1500000
+JoinedRelation: customer
+JoinedRelation: nation
+JoinedRelation: orders
+Attribute: n_nationkey numOfDistinct: 25
+EndOfRelation
+Relation: customer tupleCount: 1500000
+JoinedRelation: customer
+JoinedRelation: nation
+JoinedRelation: orders
+Attribute: c_nationkey numOfDistinct: 25
+Attribute: c_custkey numOfDistinct: 150000
+EndOfRelation
+Relation: orders tupleCount: 1500000
+JoinedRelation: customer
+JoinedRelation: nation
+JoinedRelation: orders
+Attribute: o_custkey numOfDistinct: 150000
+EndOfRelation

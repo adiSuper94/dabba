@@ -1,0 +1,116 @@
+Relation: lineitem tupleCount: 857316
+JoinedRelation: lineitem
+Attribute: l_shipmode numOfDistinct: 7
+Attribute: l_discount numOfDistinct: 11
+Attribute: l_returnflag numOfDistinct: 3
+EndOfRelation
+***************************************************************************************************************************************
+Relation: nation tupleCount: 1500000
+JoinedRelation: customer
+JoinedRelation: nation
+JoinedRelation: orders
+Attribute: n_nationkey numOfDistinct: 25
+EndOfRelation
+Relation: customer tupleCount: 1500000
+JoinedRelation: customer
+JoinedRelation: nation
+JoinedRelation: orders
+Attribute: c_nationkey numOfDistinct: 25
+Attribute: c_custkey numOfDistinct: 150000
+EndOfRelation
+Relation: orders tupleCount: 1500000
+JoinedRelation: customer
+JoinedRelation: nation
+JoinedRelation: orders
+Attribute: o_custkey numOfDistinct: 150000
+EndOfRelation
+***************************************************************************************************************************************
+Relation: lineitem tupleCount: 400081
+JoinedRelation: customer
+JoinedRelation: lineitem
+JoinedRelation: orders
+Attribute: l_orderkey numOfDistinct: 1500000
+EndOfRelation
+Relation: orders tupleCount: 400081
+JoinedRelation: customer
+JoinedRelation: lineitem
+JoinedRelation: orders
+Attribute: o_custkey numOfDistinct: 150000
+Attribute: o_orderkey numOfDistinct: 1500000
+EndOfRelation
+Relation: customer tupleCount: 400081
+JoinedRelation: customer
+JoinedRelation: lineitem
+JoinedRelation: orders
+Attribute: c_mktsegment numOfDistinct: 5
+Attribute: c_custkey numOfDistinct: 150000
+EndOfRelation
+***************************************************************************************************************************************
+Relation: nation tupleCount: 2000405
+JoinedRelation: customer
+JoinedRelation: lineitem
+JoinedRelation: nation
+JoinedRelation: orders
+Attribute: n_nationkey numOfDistinct: 25
+EndOfRelation
+Relation: customer tupleCount: 2000405
+JoinedRelation: customer
+JoinedRelation: lineitem
+JoinedRelation: nation
+JoinedRelation: orders
+Attribute: c_nationkey numOfDistinct: 25
+Attribute: c_custkey numOfDistinct: 150000
+EndOfRelation
+Relation: orders tupleCount: 2000405
+JoinedRelation: customer
+JoinedRelation: lineitem
+JoinedRelation: nation
+JoinedRelation: orders
+Attribute: o_custkey numOfDistinct: 150000
+Attribute: o_orderkey numOfDistinct: 1500000
+EndOfRelation
+Relation: lineitem tupleCount: 2000405
+JoinedRelation: customer
+JoinedRelation: lineitem
+JoinedRelation: nation
+JoinedRelation: orders
+Attribute: l_orderkey numOfDistinct: 1500000
+EndOfRelation
+***************************************************************************************************************************************
+Relation: part tupleCount: 21433
+JoinedRelation: lineitem
+JoinedRelation: part
+Attribute: p_container numOfDistinct: 40
+Attribute: p_partkey numOfDistinct: 200000
+EndOfRelation
+Relation: lineitem tupleCount: 21433
+JoinedRelation: lineitem
+JoinedRelation: part
+Attribute: l_shipmode numOfDistinct: 7
+Attribute: l_shipinstruct numOfDistinct: 4
+Attribute: l_partkey numOfDistinct: 200000
+EndOfRelation
+Relation: orders tupleCount: 2000405
+JoinedRelation: customer
+JoinedRelation: lineitem
+JoinedRelation: nation
+JoinedRelation: orders
+Attribute: o_orderkey numOfDistinct: 1500000
+Attribute: o_custkey numOfDistinct: 150000
+EndOfRelation
+Relation: customer tupleCount: 2000405
+JoinedRelation: customer
+JoinedRelation: lineitem
+JoinedRelation: nation
+JoinedRelation: orders
+Attribute: c_custkey numOfDistinct: 150000
+Attribute: c_nationkey numOfDistinct: 25
+EndOfRelation
+Relation: nation tupleCount: 2000405
+JoinedRelation: customer
+JoinedRelation: lineitem
+JoinedRelation: nation
+JoinedRelation: orders
+Attribute: n_nationkey numOfDistinct: 25
+EndOfRelation
+***************************************************************************************************************************************

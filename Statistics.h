@@ -1,76 +1,69 @@
 #ifndef STATISTICS_
 #define STATISTICS_
 #include "ParseTree.h"
-
 #include <iostream>
+#include <cstdlib>
+#include <cstdio>
+#include <cmath>
 #include <unordered_map>
-#include <unordered_set>
+#include <string>
+#include <fstream>
+#include <vector>
+#include <set>
+#include <string>
+#include <map>
+#include <sstream>
+
 using namespace std;
 
-struct RelationStats {
-private:
-    double tupleCount;
+class RelationStats{
+
 
 public:
-    RelationStats() {
-        this->tupleCount = 0;
+    unordered_map<string, int> attributeMap;
+    int tupleCount;
+    string relName;
+    set<string> joinedRelation;
+    RelationStats(string relName, int tupleCount){
+        this->tupleCount = tupleCount;
+        this->relName = relName;
+        joinedRelation.insert(relName);
     }
-
-    RelationStats(double numOfTuples) {
-        this->tupleCount = numOfTuples;
-    }
-
-    double GetTupleCount() {
-        return tupleCount;
-    }
-
-    void SetTupleCount(double n) {
-        this->tupleCount = n;
+    ~RelationStats(){
+        attributeMap.clear();
+        joinedRelation.clear();
     }
 };
 
-struct AttribStats {
-private:
-    int distinctCount;
-
-public:
-    AttribStats() {
-        this->distinctCount = 0;
-    }
-
-    AttribStats(int numOfDistinct) {
-        this->distinctCount = numOfDistinct;
-    }
-
-    int GetNumOfDistinct() {
-        return distinctCount;
-    }
-};
 
 class Statistics
 {
 private:
-    unordered_map<string, RelationStats> groupRelationMap;
-    unordered_map<string, AttribStats> nameAttribMap;
-    unordered_map<string, unordered_set<string> > groupNameRelMap;
-    unordered_map<string, string> relGroupMap;
+
 public:
-	Statistics();
-	Statistics(Statistics &copyMe);	 // Performs deep copy
-	~Statistics();
+    Statistics();
+    Statistics(Statistics &copyMe);
+    ~Statistics();
 
+    unordered_map<string, RelationStats*> relationMap;
+    bool helpPartitionAndParseTree(struct AndList *parseTree, char *subsetNames[], int numToJoin, unordered_map<string,long> &uniqvallist);
+    bool helpAttributes(char *value,char *subsetNames[], int numToJoin,unordered_map<string,long> &uniqvallist);
+    double helpTuplesEstimate(struct OrList *orList, unordered_map<string,long> &uniqvallist);
 
-	void AddRel(char *relName, int numTuples);
-	void AddAtt(char *relName, char *attName, int numDistincts);
-	void CopyRel(char *oldName, char *newName);
-	
-	void Read(char *fromWhere);
-	void Write(char *fromWhere);
+    void AddRel(char *relName, int numTuples);
+    void AddAtt(char *relName, char *attName, int numDistincts);
+    void CopyRel(char *oldName, char *newName);
 
-	void  Apply(struct AndList *parseTree, char *relNames[], int numToJoin);
-	double Estimate(struct AndList *parseTree, char **relNames, int numToJoin);
+    void Read(char *fromWhere);
+    void Write(char *fromWhere);
 
-    void NameOperandPreProcess(Operand *operand, unordered_set<string> relations);
+    void  Apply(struct AndList *parseTree, char *relNames[], int numToJoin);
+    double Estimate(struct AndList *parseTree, char **relNames, int numToJoin);
+
 };
+
+set<string> getJoinedRelations(string subsetName);
+
+string serializationJoinedRelations(set<string> joinedRelation);
 
 #endif

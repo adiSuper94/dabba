@@ -18,11 +18,11 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 
 
-add_executable(Project1 main.cc Record.cc Record.h
+add_executable(Project1 main.cc Record.cc Record.h y.tab.h test.cc
         Comparison.cc Comparison.h ComparisonEngine.cc ComparisonEngine.h DBFile.cc DBFile.h File.cc File.h
         BigQ.cc BigQ.h Pipe.cc Pipe.h TwoWayList.cc TwoWayList.h Schema.h Schema.cc ParseTree.h Statistics.h Statistics.cc
         Run.cpp Run.h BaseDBFile.h BaseDBFile.cpp HeapDBFile.cpp HeapDBFile.h RelOp.h RelOp.cc
-        ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS} ${BISON_MyParser2_OUTPUTS} SortedDBFile.cpp SortedDBFile.h)
+        ${BISON_MyParser_OUTPUTS} ${FLEX_MyScanner_OUTPUTS} ${BISON_MyParser2_OUTPUTS} SortedDBFile.cpp SortedDBFile.h test.h)
 
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)

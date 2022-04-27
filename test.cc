@@ -1,9 +1,9 @@
-#include "y.tab.h"
+//#include "y.tab.h"
 #include <iostream>
-#include <stdlib.h>
+#include <cstdlib>
 #include "Statistics.h"
 #include "ParseTree.h"
-#include <math.h>
+#include <cmath>
 extern "C" struct YY_BUFFER_STATE *yy_scan_string(const char*);
 extern "C" int yyparse(void);
 extern struct AndList *final;
@@ -101,7 +101,7 @@ void q0 (){
 	yyparse();
 	double result = s.Estimate(final, relName, 2);
 	if(result!=800000)
-		cout<<"error in estimating Q1 before apply \n ";
+		cout<<result <<" error in estimating Q1 before apply \n ";
 	s.Apply(final, relName, 2);
 
 	// test write and read
@@ -198,7 +198,7 @@ void q3 (){
 	s.Read(fileName);
 	
 	s.AddRel(relName[0],10000);
-	s.AddAtt(relName[0], "s_nationey",25);
+	s.AddAtt(relName[0], "s_nationkey",25);
 
 	s.AddRel(relName[1],150000);
 	s.AddAtt(relName[1], "c_custkey",150000);
@@ -538,7 +538,7 @@ void q11 (){
 	
 	s.AddRel(relName[0],200000);
 	s.AddAtt(relName[0], "p_partkey",200000);
-	s.AddAtt(relName[0], "p_conatiner",40);
+	s.AddAtt(relName[0], "p_container",40);
 
 	s.AddRel(relName[1],6001215);
 	s.AddAtt(relName[1], "l_partkey",200000);
@@ -561,24 +561,4 @@ void q11 (){
 	
 }
 
-int main(int argc, char *argv[]) {
-	if (argc < 2) {
-		cerr << "You need to supply me the query number to run as a command-line arg.." << endl;
-		cerr << "Usage: ./test.out [0-11] >" << endl;
-		exit (1);
-	}
 
-	void (*query_ptr[]) () = {&q0,&q1, &q2, &q3, &q4, &q5, &q6, &q7, &q8,&q9,&q10,&q11};  
-	void (*query) ();
-	int qindx = atoi (argv[1]);
-
-	if (qindx >=0 && qindx < 12) {
-		query = query_ptr [qindx ];
-		query ();
-		cout << "\n\n";
-	}
-	else {
-		cout << " ERROR!!!!\n";
-	}
-
-}
