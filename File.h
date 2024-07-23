@@ -1,9 +1,8 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include "Comparison.h"
-#include "ComparisonEngine.h"
-#include "Record.h"
+#include <fcntl.h>
+
 #include "Schema.h"
 #include "TwoWayList.h"
 

@@ -2,15 +2,13 @@
 
 #include "Comparison.h"
 #include "ComparisonEngine.h"
-#include "Defs.h"
 #include "File.h"
 #include "Record.h"
 #include "Schema.h"
-#include "TwoWayList.h"
 
 // stub file .. replace it with your own DBFile.cc
 
-DBFile::DBFile() = default;
+DBFile::DBFile() {}
 
 int DBFile::Create(const char *f_path, fType f_type, void *startup) {}
 

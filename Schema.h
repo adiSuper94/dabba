@@ -2,13 +2,7 @@
 #ifndef SCHEMA_H
 #define SCHEMA_H
 
-#include <stdio.h>
-
-#include "Comparison.h"
-#include "ComparisonEngine.h"
-#include "File.h"
-#include "Record.h"
-#include "Schema.h"
+#include "Defs.h"
 
 struct Attribute {
   char *name;

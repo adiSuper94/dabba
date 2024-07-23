@@ -6,6 +6,8 @@
 #include <cstring>
 #include <iostream>
 
+using namespace std;
+
 int Schema ::Find(const char *attName) {
   for (int i = 0; i < numAtts; i++) {
     if (!strcmp(attName, myAtts[i].name)) {
