@@ -1,6 +1,7 @@
 #ifndef DBFILE_H
 #define DBFILE_H
 
+#include <fcntl.h>
 #include "Comparison.h"
 #include "ComparisonEngine.h"
 #include "File.h"
@@ -13,18 +14,28 @@ typedef enum { heap, sorted, tree } fType;
 // stub DBFile header..replace it with your own DBFile.h
 
 class DBFile {
- public:
-  DBFile();
+  private:
+    File *file;
+    bool isPageDirty;
+    Page *writePage;
+    Page *readPage;
+    char *f_path;
+    Record *curr;
+    off_t writePageId;
+    off_t readPageId;
 
-  int Create(const char *fpath, fType file_type, void *startup);
-  int Open(const char *fpath);
-  int Close();
+  public:
+    DBFile();
 
-  void Load(Schema &myschema, const char *loadpath);
+    int Create(const char *fpath, fType file_type, void *startup);
+    int Open(const char *fpath);
+    int Close();
 
-  void MoveFirst();
-  void Add(Record &addme);
-  int GetNext(Record &fetchme);
-  int GetNext(Record &fetchme, CNF &cnf, Record &literal);
+    void Load(Schema &myschema, const char *loadpath);
+
+    void MoveFirst();
+    void Add(Record &addme);
+    int GetNext(Record &fetchme);
+    int GetNext(Record &fetchme, CNF &cnf, Record &literal);
 };
 #endif
