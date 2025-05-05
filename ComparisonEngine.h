@@ -1,12 +1,6 @@
 #ifndef _ENGINE
 #define _ENGINE
 
-#include "Comparison.h"
-#include "ComparisonEngine.h"
-#include "File.h"
-#include "Record.h"
-#include "Schema.h"
-
 class Record;
 class Comparison;
 class OrderMaker;

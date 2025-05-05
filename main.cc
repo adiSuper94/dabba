@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include "Comparison.h"
+#include "ComparisonEngine.h"
 #include "Record.h"
 
 using namespace std;

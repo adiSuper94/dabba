@@ -6,16 +6,9 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-#include "Comparison.h"
-#include "ComparisonEngine.h"
-#include "Defs.h"
-#include "File.h"
-#include "ParseTree.h"
-#include "Record.h"
 #include "Schema.h"
 
-// Basic record data structure. Data is actually stored in "bits" field. The layout of bits is as
-// follows:
+// Basic record data structure. Data is actually stored in "bits" field. The layout of bits is as follows:
 //	1) First sizeof(int) bytes: length of the record in bytes
 //	2) Next sizeof(int) bytes: byte offset to the start of the first att
 //	3) Byte offset to the start of the att in position numAtts
